@@ -1,0 +1,26 @@
+{% extends "saidika/base.html" %}
+{% block title %}Registration payment | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap">
+    <div class="status-card">
+        <span class="eyebrow">Step 2 of 3</span>
+        <h2>Complete your registration</h2>
+        <p class="muted">Pay the one-time registration fee to unlock the style quiz, your capsule and the closet.</p>
+        <div class="panel" style="text-align:left">
+            <div class="total-line" style="padding:0 0 18px"><span>Registration fee</span><span>KES {{ fee }}</span></div>
+            {% if simulated %}
+            <div class="alert-box warn">Demo mode: Daraja keys are not set, so the payment will be simulated instantly.</div>
+            {% endif %}
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="field">
+                    <label for="{{ form.phone.id_for_label }}">M-Pesa phone number</label>
+                    {{ form.phone }}{{ form.phone.errors }}
+                    <div class="help">You will get an M-Pesa prompt on this number. Enter your PIN to confirm.</div>
+                </div>
+                <button class="btn block" type="submit">Pay KES {{ fee }} with M-Pesa</button>
+            </form>
+        </div>
+    </div>
+</div></div>
+{% endblock %}

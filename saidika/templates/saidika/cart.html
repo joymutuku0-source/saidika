@@ -1,0 +1,40 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}Your bag | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap" style="max-width:860px">
+    <span class="eyebrow">Your bag</span>
+    <h2>Review your pieces</h2>
+    {% if lines %}
+    <div class="panel">
+        <table>
+            <thead><tr><th></th><th>Piece</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+            {% for l in lines %}
+            <tr>
+                <td style="width:70px"><img src="{% static l.product.image %}" alt=""></td>
+                <td><b>{{ l.product.name }}</b><br><span class="muted">KES {{ l.product.price|floatformat:0 }}</span></td>
+                <td>{{ l.qty }}</td>
+                <td class="price">KES {{ l.subtotal|floatformat:0 }}</td>
+                <td>
+                    <form method="post" action="{% url 'cart_remove' l.product.pk %}">{% csrf_token %}
+                        <button class="linklike" style="color:#b3261e" type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="total-line"><span>Total</span><span>KES {{ total|floatformat:0 }}</span></div>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap">
+            <a class="btn ghost" href="{% url 'closet' %}">Keep shopping</a>
+            <a class="btn" href="{% url 'checkout' %}">Checkout with M-Pesa</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty panel">
+        <h3>Your bag is empty</h3>
+        <p>Add your capsule or browse the closet.</p>
+        <a class="btn" href="{% url 'closet' %}">Browse the closet</a>
+    </div>
+    {% endif %}
+</div></div>
+{% endblock %}

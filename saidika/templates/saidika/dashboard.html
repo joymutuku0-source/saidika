@@ -1,0 +1,51 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}Dashboard | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap">
+    <div class="page-head">
+        <div>
+            <span class="eyebrow">Your dashboard</span>
+            <h2>Hello, {{ user.username }}.</h2>
+        </div>
+        <a class="btn" href="{% url 'curate' %}">{% if profile.body_type %}Retake the quiz{% else %}Take the style quiz{% endif %}</a>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat"><small>Body type</small><b>{{ profile.get_body_type_display|default:"Not set yet" }}</b></div>
+        <div class="stat"><small>Size</small><b>{{ profile.size|default:"-" }}</b></div>
+        <div class="stat"><small>Style</small><b>{{ profile.style|capfirst|default:"-" }}</b></div>
+    </div>
+
+    <div class="split">
+        <div class="panel">
+            {% if outfit %}
+                <span class="tag">{{ profile.get_body_type_display }}</span>
+                <h3 style="margin-top:12px">Your capsule: {{ outfit.name }}</h3>
+                <p class="muted">{{ info }}</p>
+                <div class="mosaic" style="border-radius:16px;overflow:hidden;margin:18px 0">
+                    {% for p in outfit.products.all %}<img src="{% static p.image %}" alt="{{ p.name }}">{% endfor %}
+                </div>
+                <a class="btn" href="{% url 'capsule' %}">See my full capsule</a>
+            {% else %}
+                <div class="empty">
+                    <h3>Your capsule is waiting</h3>
+                    <p>Take the 1-minute style quiz and we will pick a whole outfit for your shape.</p>
+                    <a class="btn" href="{% url 'curate' %}">Start the quiz</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="panel">
+            <h3>Recent orders</h3>
+            {% for o in orders %}
+                <p style="display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:10px 0;margin:0">
+                    <a href="{% url 'order_detail' o.pk %}"><b>Order #{{ o.pk }}</b></a>
+                    <span>KES {{ o.total|floatformat:0 }}</span>
+                </p>
+            {% empty %}
+                <p class="muted">No paid orders yet. Visit <a href="{% url 'closet' %}" style="color:var(--rose);font-weight:700">the closet</a> to start.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div></div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}Your capsule | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap">
+    <div class="page-head">
+        <div>
+            <span class="eyebrow">Your result</span>
+            <h2>You are <em class="accent">{{ profile.get_body_type_display }}</em>.</h2>
+            <p class="muted" style="max-width:620px">{{ info }}</p>
+        </div>
+        <a class="btn ghost" href="{% url 'curate' %}">Retake quiz</a>
+    </div>
+
+    {% for outfit in outfits %}
+    <section class="panel" style="margin-bottom:26px">
+        <div class="split" style="grid-template-columns:1.2fr .8fr">
+            <div>
+                <span class="tag">Capsule for {{ profile.get_body_type_display }} · size {{ profile.size }}</span>
+                <h3 style="margin-top:12px;font-size:1.8rem">{{ outfit.name }}</h3>
+                <p class="muted">{{ outfit.tagline }}</p>
+                <p><b>Styling tip:</b> {{ outfit.tips }}</p>
+                <table>
+                    <thead><tr><th></th><th>Piece</th><th>Price</th></tr></thead>
+                    {% for p in outfit.products.all %}
+                    <tr>
+                        <td style="width:70px"><img src="{% static p.image %}" alt="{{ p.name }}"></td>
+                        <td><b>{{ p.name }}</b><br><span class="muted">{{ p.get_category_display }} · {{ p.color }}</span></td>
+                        <td class="price">KES {{ p.price|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <div class="total-line"><span>Whole capsule</span><span>KES {{ outfit.total|floatformat:0 }}</span></div>
+                <form method="post" action="{% url 'cart_add_outfit' outfit.pk %}" style="margin-top:16px">
+                    {% csrf_token %}
+                    <button class="btn block" type="submit">Add the whole capsule to my bag</button>
+                </form>
+            </div>
+            <div class="mosaic" style="border-radius:18px;overflow:hidden">
+                {% for p in outfit.products.all %}<img src="{% static p.image %}" alt="{{ p.name }}">{% endfor %}
+            </div>
+        </div>
+    </section>
+    {% empty %}
+        <div class="empty">No capsule is set up for your body type yet. <a href="{% url 'closet' %}" style="color:var(--rose);font-weight:700">Browse the closet</a>.</div>
+    {% endfor %}
+</div></div>
+{% endblock %}

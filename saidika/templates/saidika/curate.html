@@ -1,0 +1,57 @@
+{% extends "saidika/base.html" %}
+{% block title %}Style consultation | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap" style="max-width:760px">
+    <span class="eyebrow">Step 3 of 3</span>
+    <h2>Style consultation</h2>
+    <p class="muted">Tell us your dimensions to find your flattering match. Measurements are optional if you already know your silhouette.</p>
+
+    <form method="post" class="panel" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="alert-box warn">{{ form.non_field_errors }}</div>{% endif %}
+
+        <div class="row2">
+            <div class="field"><label for="{{ form.size.id_for_label }}">Your size</label>{{ form.size }}{{ form.size.errors }}</div>
+            <div class="field"><label for="{{ form.style.id_for_label }}">Your style</label>{{ form.style }}{{ form.style.errors }}</div>
+        </div>
+
+        <h3 style="margin-top:6px">Pick your silhouette</h3>
+        <div class="pick-grid" id="picker">
+            {% for key, label in form.fields.body_type.choices %}{% if key %}
+            <button type="button" class="pick" data-type="{{ key }}">
+                {% include "saidika/_silhouette.html" with t=key %}<span>{{ label }}</span>
+            </button>
+            {% endif %}{% endfor %}
+        </div>
+        <p class="help" style="margin:10px 0 20px">Tap the shape closest to yours, or fill in your measurements below.</p>
+
+        <h3 style="margin-top:10px">Measurements (cm)</h3>
+        <div class="row3">
+            <div class="field"><label for="{{ form.bust.id_for_label }}">Bust</label>{{ form.bust }}{{ form.bust.errors }}</div>
+            <div class="field"><label for="{{ form.waist.id_for_label }}">Waist</label>{{ form.waist }}{{ form.waist.errors }}</div>
+            <div class="field"><label for="{{ form.hips.id_for_label }}">Hips</label>{{ form.hips }}{{ form.hips.errors }}</div>
+        </div>
+        <p class="help" style="margin-bottom:20px">Measure around the fullest part of the bust and hips, and the narrowest part of the waist.</p>
+
+        <div class="field">
+            <label for="{{ form.body_type.id_for_label }}">Or pick your silhouette</label>
+            {{ form.body_type }}{{ form.body_type.errors }}
+            <div class="help">If you add measurements we use those first.</div>
+        </div>
+        <button class="btn block" type="submit">Find my perfect clothes</button>
+    </form>
+</div></div>
+<script>
+(function(){
+  var sel=document.getElementById("{{ form.body_type.id_for_label }}");
+  var picks=document.querySelectorAll("#picker .pick");
+  function mark(){picks.forEach(function(b){b.classList.toggle("on", b.dataset.type===sel.value)})}
+  picks.forEach(function(b){b.addEventListener("click",function(){
+    sel.value=b.dataset.type;
+    ["bust","waist","hips"].forEach(function(n){var i=document.getElementById("id_"+n); if(i) i.value="";});
+    mark();
+  })});
+  sel.addEventListener("change",mark); mark();
+})();
+</script>
+{% endblock %}

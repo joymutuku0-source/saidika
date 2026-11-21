@@ -1,0 +1,28 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}Sign in | Saidika{% endblock %}
+{% block content %}
+<div class="auth">
+    <div class="auth-art" style="background-image:url('{% static 'saidika/images/coats.jpg' %}')">
+        <blockquote>Welcome back. Your capsule is waiting.</blockquote>
+    </div>
+    <div class="auth-form">
+        <div class="form-card">
+            <span class="eyebrow">Member sign in</span>
+            <h2>Welcome back</h2>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="alert-box warn">Wrong username or password. Please try again.</div>{% endif %}
+                {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}{{ field.errors }}
+                </div>
+                {% endfor %}
+                <button class="btn block" type="submit">Sign in</button>
+            </form>
+            <p class="muted" style="margin-top:18px;font-size:.9rem">New here? <a href="{% url 'signup' %}" style="color:var(--rose);font-weight:700">Create an account</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

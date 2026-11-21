@@ -1,0 +1,31 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}Create account | Saidika{% endblock %}
+{% block content %}
+<div class="auth">
+    <div class="auth-art" style="background-image:url('{% static 'saidika/images/tops.jpg' %}')">
+        <blockquote>Fewer pieces. Better outfits. A wardrobe that finally makes sense.</blockquote>
+    </div>
+    <div class="auth-form">
+        <div class="form-card">
+            <span class="eyebrow">Step 1 of 3</span>
+            <h2>Create your account</h2>
+            <p class="muted">Registration includes a one-time KES {{ fee }} fee paid by M-Pesa on the next screen.</p>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="alert-box warn">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<div class="help">{{ field.help_text|safe }}</div>{% endif %}
+                    {{ field.errors }}
+                </div>
+                {% endfor %}
+                <button class="btn block" type="submit">Continue to payment</button>
+            </form>
+            <p class="muted" style="margin-top:18px;font-size:.9rem">Already registered? <a href="{% url 'login' %}" style="color:var(--rose);font-weight:700">Sign in</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

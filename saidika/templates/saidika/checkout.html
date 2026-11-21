@@ -1,0 +1,26 @@
+{% extends "saidika/base.html" %}
+{% block title %}Checkout | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap" style="max-width:760px">
+    <span class="eyebrow">Checkout</span>
+    <h2>Pay with M-Pesa</h2>
+    <div class="panel">
+        <table>
+            {% for l in lines %}
+            <tr><td>{{ l.product.name }} × {{ l.qty }}</td><td class="price" style="text-align:right">KES {{ l.subtotal|floatformat:0 }}</td></tr>
+            {% endfor %}
+        </table>
+        <div class="total-line"><span>Total</span><span>KES {{ total|floatformat:0 }}</span></div>
+        {% if simulated %}<div class="alert-box warn" style="margin-top:18px">Demo mode: Daraja keys are not set, so the payment will be simulated instantly.</div>{% endif %}
+        <form method="post" style="margin-top:22px" novalidate>
+            {% csrf_token %}
+            <div class="field">
+                <label for="{{ form.phone.id_for_label }}">M-Pesa phone number</label>
+                {{ form.phone }}{{ form.phone.errors }}
+                <div class="help">An STK Push prompt will be sent to this number.</div>
+            </div>
+            <button class="btn block" type="submit">Pay KES {{ total|floatformat:0 }}</button>
+        </form>
+    </div>
+</div></div>
+{% endblock %}

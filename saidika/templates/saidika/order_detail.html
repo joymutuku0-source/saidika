@@ -1,0 +1,25 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}Order #{{ order.pk }} | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap" style="max-width:760px">
+    <span class="eyebrow">Order #{{ order.pk }}</span>
+    <h2>{% if order.status == "PAID" %}Thank you, your order is confirmed{% else %}Order {{ order.get_status_display|lower }}{% endif %}</h2>
+    <div class="panel">
+        <table>
+            {% for i in order.items.all %}
+            <tr>
+                <td style="width:70px"><img src="{% static i.product.image %}" alt=""></td>
+                <td><b>{{ i.product.name }}</b><br><span class="muted">Qty {{ i.quantity }}</span></td>
+                <td class="price" style="text-align:right">KES {{ i.subtotal|floatformat:0 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="total-line"><span>Total</span><span>KES {{ order.total|floatformat:0 }}</span></div>
+        {% for p in order.payments.all %}
+            <p class="muted" style="margin-top:14px">M-Pesa receipt: <b>{{ p.receipt|default:"pending" }}</b> · {{ p.get_status_display }}</p>
+        {% endfor %}
+        <a class="btn" href="{% url 'closet' %}" style="margin-top:12px">Keep shopping</a>
+    </div>
+</div></div>
+{% endblock %}

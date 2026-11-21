@@ -1,0 +1,77 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Saidika | The Wardrobe Capsule{% endblock %}</title>
+    <meta name="description" content="Find your body type, get a capsule wardrobe chosen for you, and pay with M-Pesa.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'saidika/css/styles.css' %}">
+</head>
+<body>
+<header class="nav">
+    <div class="wrap nav-inner">
+        <a class="brand" href="{% url 'home' %}">Saidika<span>.</span></a>
+        <button class="menu-btn" onclick="document.getElementById('links').classList.toggle('open')" aria-label="Menu">☰</button>
+        <ul class="nav-links" id="links">
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'curate' %}">Style quiz</a></li>
+                <li><a href="{% url 'closet' %}">The Closet</a></li>
+                <li><a class="bag" href="{% url 'cart' %}">Bag{% if cart_count %}<b>{{ cart_count }}</b>{% endif %}</a></li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                        <button class="linklike" type="submit">Log out</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'home' %}#features">Features</a></li>
+                <li><a href="{% url 'home' %}#how">How it works</a></li>
+                <li><a href="{% url 'home' %}#shapes">Body types</a></li>
+                <li><a href="{% url 'login' %}">Sign in</a></li>
+                <li><a class="btn small" href="{% url 'signup' %}" style="color:#fff">Get started</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
+
+{% if messages %}
+<div class="messages">
+    {% for m in messages %}<div class="msg {{ m.tags }}">{{ m }}</div>{% endfor %}
+</div>
+<script>setTimeout(function(){var m=document.querySelector('.messages');if(m)m.style.display='none'},4500)</script>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+    <div class="wrap">
+        <div class="foot-grid">
+            <div>
+                <a class="brand" href="{% url 'home' %}">Saidika<span>.</span></a>
+                <p class="muted" style="max-width:340px;margin-top:10px">Fewer, better pieces. A capsule wardrobe chosen for your body type, paid with M-Pesa.</p>
+            </div>
+            <div>
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}#features">Features</a></li>
+                    <li><a href="{% url 'home' %}#how">How it works</a></li>
+                    <li><a href="{% url 'api_info' %}">Public API</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="{% url 'login' %}">Sign in</a></li>
+                    <li><a href="{% url 'signup' %}">Create account</a></li>
+                    <li><a href="{% url 'closet' %}">The Closet</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="copy">© 2026 Saidika. Built with Django &amp; Django REST Framework. Payments by Safaricom Daraja.</p>
+    </div>
+</footer>
+</body>
+</html>

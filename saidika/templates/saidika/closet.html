@@ -1,0 +1,41 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block title %}The Closet | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap">
+    <div class="page-head">
+        <div>
+            <span class="eyebrow">Shop</span>
+            <h2>The Closet Grid</h2>
+        </div>
+        <a class="btn ghost" href="{% url 'capsule' %}">My capsule</a>
+    </div>
+
+    <div class="chips">
+        <a class="chip {% if not active %}on{% endif %}" href="{% url 'closet' %}">All</a>
+        {% for key, label in categories %}
+        <a class="chip {% if active == key %}on{% endif %}" href="?category={{ key }}">{{ label }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="grid-products">
+        {% for p in products %}
+        <article class="product">
+            <img src="{% static p.image %}" alt="{{ p.name }}" loading="lazy">
+            <div class="info">
+                <span class="muted" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.08em">{{ p.get_category_display }} · {{ p.color }}</span>
+                <h3>{{ p.name }}</h3>
+                <span class="price">KES {{ p.price|floatformat:0 }}</span>
+                <form method="post" action="{% url 'cart_add' p.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button class="btn small block" type="submit">Add to bag</button>
+                </form>
+            </div>
+        </article>
+        {% empty %}
+        <div class="empty" style="grid-column:1/-1">Nothing here yet.</div>
+        {% endfor %}
+    </div>
+</div></div>
+{% endblock %}

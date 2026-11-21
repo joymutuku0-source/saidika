@@ -1,0 +1,42 @@
+{% extends "saidika/base.html" %}
+{% block title %}Payment | Saidika{% endblock %}
+{% block content %}
+<div class="page"><div class="wrap">
+    <div class="status-card panel" id="box">
+        {% if payment.status == "SUCCESS" %}
+            <div class="check">✓</div>
+            <h2>Payment received</h2>
+            <p class="muted">KES {{ payment.amount }} · Receipt <b>{{ payment.receipt }}</b></p>
+            {% if payment.purpose == "REGISTRATION" %}
+                <a class="btn" href="{% url 'curate' %}">Start the style quiz</a>
+            {% else %}
+                <a class="btn" href="{% url 'order_detail' payment.order.pk %}">View my order</a>
+            {% endif %}
+        {% elif payment.status == "FAILED" %}
+            <div class="check cross">✕</div>
+            <h2>Payment didn't go through</h2>
+            <p class="muted">{{ payment.note|default:"The request was cancelled or timed out." }}</p>
+            {% if payment.purpose == "REGISTRATION" %}
+                <a class="btn" href="{% url 'activate' %}">Try again</a>
+            {% else %}
+                <a class="btn" href="{% url 'checkout' %}">Back to checkout</a>
+            {% endif %}
+        {% else %}
+            <div class="spinner" id="spin"></div>
+            <h2 id="title">Check your phone</h2>
+            <p class="muted" id="msg">We sent an M-Pesa prompt to <b>{{ payment.phone }}</b>. Enter your PIN to pay KES {{ payment.amount }}. This page updates by itself.</p>
+        {% endif %}
+    </div>
+</div></div>
+
+{% if payment.status == "PENDING" %}
+<script>
+(function poll(){
+  fetch("{% url 'payment_status_json' payment.pk %}").then(r=>r.json()).then(d=>{
+    if(d.status !== "PENDING"){ location.reload(); }
+    else { setTimeout(poll, 3000); }
+  }).catch(()=>setTimeout(poll, 5000));
+})();
+</script>
+{% endif %}
+{% endblock %}

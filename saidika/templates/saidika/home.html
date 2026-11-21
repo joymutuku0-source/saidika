@@ -1,0 +1,134 @@
+{% extends "saidika/base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="wrap hero-grid">
+        <div>
+            <span class="eyebrow">The Wardrobe Capsule · Kenya</span>
+            <h1>Own less. <em class="accent">Look</em> like you planned it.</h1>
+            <p class="lead">Tell us your shape and size. We build a capsule wardrobe around your body type, a whole outfit, ready to checkout and pay with M-Pesa.</p>
+            <div class="cta-row">
+                <a class="btn" href="{% url 'signup' %}">Create my capsule</a>
+                <a class="btn ghost" href="{% url 'login' %}">Sign in</a>
+            </div>
+            <div class="badges">
+                <span class="badge"><i></i> 5 body types</span>
+                <span class="badge"><i></i> Daraja M-Pesa</span>
+                <span class="badge"><i></i> Ready-made outfits</span>
+                <span class="badge"><i></i> Secure accounts</span>
+            </div>
+        </div>
+        <div class="hero-art">
+            <div class="arch"><img src="{% static 'saidika/images/hero.jpg' %}" alt="Three people wearing pastel shirts and trousers"></div>
+            <div class="float f1"><span class="dot">✓</span><div>Capsule matched<small>Pear · Size M</small></div></div>
+            <div class="float f2"><span class="dot">M</span><div>M-Pesa prompt sent<small>Enter your PIN</small></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="block" id="features">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="eyebrow">What you get</span>
+            <h2>One platform for your whole <em class="accent">closet</em>.</h2>
+            <p class="muted">From finding your silhouette to paying for the final piece, everything happens in one place.</p>
+        </div>
+        <div class="bento">
+            <div class="card"><div class="icon">📏</div><h3>Body-type quiz</h3><p>Enter your measurements or pick a silhouette. We work out Hourglass, Pear, Rectangle, Apple or Inverted Triangle.</p></div>
+            <div class="card"><div class="icon">🧥</div><h3>Capsule outfits</h3><p>A top, bottom, layer and shoes chosen to flatter your shape, with styling tips that explain why.</p></div>
+            <div class="card"><div class="icon">🛍️</div><h3>Shop the closet</h3><p>Browse by category, add single pieces or a full capsule to your bag in one tap.</p></div>
+            <div class="card"><div class="icon">📲</div><h3>M-Pesa checkout</h3><p>Register and pay with a Safaricom STK Push straight to your phone. No cards needed.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- LOOKBOOK -->
+<section class="block" style="padding:20px 0 60px">
+    <div class="wrap">
+        <div class="section-head" style="margin-bottom:28px">
+            <span class="eyebrow">The Lookbook</span>
+            <h2>Neutral bases. <em class="accent">Endless</em> outfits.</h2>
+        </div>
+    </div>
+    <div class="marquee" aria-label="Lookbook photos">
+        <div class="track">
+            {% for img in lookbook %}<figure class="tile"><img src="{% static img %}" alt="Saidika lookbook photo" loading="lazy"></figure>{% endfor %}
+            {% for img in lookbook %}<figure class="tile" aria-hidden="true"><img src="{% static img %}" alt="" loading="lazy"></figure>{% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- BODY TYPES -->
+<section class="block" id="shapes" style="padding-top:20px">
+    <div class="wrap">
+        <div class="band">
+            <div class="band-top">
+                <span class="eyebrow" style="color:var(--blush)">Find your shape</span>
+                <h2>Five silhouettes, five different capsules.</h2>
+                <p>Clothes work best when they work with your proportions. Your capsule is built from your result, not from a trend.</p>
+                <a class="btn" href="{% url 'signup' %}">Take the quiz</a>
+            </div>
+            <div class="silhouettes">
+                {% for key, label, text in body_types %}
+                <div class="sil">{% include "saidika/_silhouette.html" with t=key %}<b>{{ label }}</b>{{ text }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="block" id="how">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="eyebrow">How it works</span>
+            <h2>Three steps. <em class="accent">No guesswork.</em></h2>
+        </div>
+        <div class="steps">
+            <div class="step"><div class="n">01</div><h3>Register &amp; pay</h3><p>Create your account and pay a one-time KES {{ fee }} registration fee with M-Pesa to unlock your personal capsule.</p></div>
+            <div class="step"><div class="n">02</div><h3>Take the style quiz</h3><p>Share your size, your style and your measurements. We match your body type in seconds.</p></div>
+            <div class="step"><div class="n">03</div><h3>Shop your capsule</h3><p>Add the whole outfit to your bag and check out with another M-Pesa prompt.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CAPSULE PREVIEW -->
+{% if outfits %}
+<section class="block" style="padding-top:20px">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="eyebrow">A peek inside</span>
+            <h2>Capsules our members <em class="accent">love</em>.</h2>
+        </div>
+        <div class="outfit-grid">
+            {% for outfit in outfits %}
+            <article class="outfit-card">
+                <div class="mosaic">
+                    {% for p in outfit.products.all %}<img src="{% static p.image %}" alt="{{ p.name }}" loading="lazy">{% endfor %}
+                </div>
+                <div class="body">
+                    <span class="tag">{{ outfit.get_body_type_display }}</span>
+                    <h3 style="margin-top:10px">{{ outfit.name }}</h3>
+                    <p class="muted" style="margin:0">{{ outfit.tagline }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- FINAL CTA -->
+<section class="block" style="padding-top:20px">
+    <div class="wrap">
+        <div class="cta-band">
+            <h2>Ready to retire the closet chaos?</h2>
+            <p>Join Saidika, find your shape and get a capsule that works with everything you already own.</p>
+            <a class="btn" href="{% url 'signup' %}">Create account</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
